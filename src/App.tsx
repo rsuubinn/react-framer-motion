@@ -6,55 +6,71 @@ const Wrapper = styled(motion.div)`
   height: 100vh;
   width: 100vw;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 `;
 
 const Box = styled(motion.div)`
-  width: 400px;
+  position: absolute;
+  top: 300px;
+  width: 200px;
   height: 200px;
   background-color: rgba(255, 255, 255, 1);
   border-radius: 40px;
-  position: absolute;
   top: 100px;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  margin-bottom: 100px;
 `;
 
-const boxVariants = {
-  initial: {
-    scale: 0,
+const boxVariant = {
+  invisible: {
+    x: 500,
     opacity: 0,
   },
   visible: {
-    scale: 1,
+    x: 0,
     opacity: 1,
-    rotateZ: 360,
+    transition: {
+      duration: 1,
+    },
   },
-  leaving: {
-    scale: 0,
+  end: {
     opacity: 0,
-    y: 50,
+    x: -500,
+    transition: {
+      duration: 1,
+    },
   },
 };
 
 function App() {
-  const [showing, setShowing] = useState(false);
-  const toggleShowing = () => {
-    setShowing((prev) => !prev);
+  const [visible, setVisible] = useState(1);
+  const nextPlease = () => {
+    setVisible(visible === 10 ? 10 : visible + 1);
   };
   return (
     <Wrapper>
-      <button onClick={toggleShowing}>Click</button>
       <AnimatePresence>
-        {showing ? (
-          <Box
-            variants={boxVariants}
-            initial="initial"
-            animate="visible"
-            exit="leaving"
-          />
-        ) : null}
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) =>
+          i === visible ? (
+            <Box
+              variants={boxVariant}
+              initial="invisible"
+              animate="visible"
+              exit="end"
+              key={i}
+            >
+              {i}
+            </Box>
+          ) : null
+        )}
       </AnimatePresence>
+      <button onClick={nextPlease}>Next</button>
     </Wrapper>
   );
 }
