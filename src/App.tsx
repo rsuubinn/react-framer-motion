@@ -28,10 +28,10 @@ const Box = styled(motion.div)`
 `;
 
 const boxVariant = {
-  invisible: {
-    x: 500,
+  invisible: (isBack: boolean) => ({
+    x: isBack ? -500 : 500,
     opacity: 0,
-  },
+  }),
   visible: {
     x: 0,
     opacity: 1,
@@ -39,38 +39,42 @@ const boxVariant = {
       duration: 1,
     },
   },
-  end: {
+  end: (isBack: boolean) => ({
+    x: isBack ? 500 : -500,
     opacity: 0,
-    x: -500,
     transition: {
       duration: 1,
     },
-  },
+  }),
 };
 
 function App() {
   const [visible, setVisible] = useState(1);
+  const [isBack, setIsBack] = useState(false);
   const nextPlease = () => {
+    setIsBack(false);
     setVisible(visible === 10 ? 10 : visible + 1);
+  };
+  const backPlease = () => {
+    setIsBack(true);
+    setVisible(visible === 1 ? 1 : visible - 1);
   };
   return (
     <Wrapper>
-      <AnimatePresence>
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) =>
-          i === visible ? (
-            <Box
-              variants={boxVariant}
-              initial="invisible"
-              animate="visible"
-              exit="end"
-              key={i}
-            >
-              {i}
-            </Box>
-          ) : null
-        )}
+      <AnimatePresence custom={isBack}>
+        <Box
+          custom={isBack}
+          variants={boxVariant}
+          initial="invisible"
+          animate="visible"
+          exit="end"
+          key={visible}
+        >
+          {visible}
+        </Box>
       </AnimatePresence>
       <button onClick={nextPlease}>Next</button>
+      <button onClick={backPlease}>Back</button>
     </Wrapper>
   );
 }
