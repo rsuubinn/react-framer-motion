@@ -59,9 +59,11 @@ const Circle = styled(motion.div)`
 `;
 
 const boxVariants = {
-  start: {},
-  doing: {},
-  done: {},
+  hover: (n: number) => ({
+    scale: 1.1,
+    x: n === 1 || n === 3 ? -25 : n === 2 || n === 4 ? 25 : 0,
+    y: n === 1 || n === 2 ? -25 : n === 3 || n === 4 ? 25 : 0,
+  }),
 };
 
 const btnVariants = {
@@ -87,14 +89,11 @@ function App() {
       <Grid>
         {[1, 2, 3, 4].map((n) => (
           <Box
-            drag="x"
-            custom={n}
             variants={boxVariants}
-            initial="start"
-            animate="doing"
-            exit="done"
+            whileHover="hover"
             onClick={() => setId(n + "")}
             key={n}
+            custom={n}
             layoutId={n + ""}
           >
             {n === 2 && !clicked ? <Circle layoutId="circle" /> : null}
